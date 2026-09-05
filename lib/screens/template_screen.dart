@@ -16,10 +16,12 @@ class TemplateScreen extends StatelessWidget {
     super.key,
     required this.toggleTheme,
     required this.isDark,
+    required this.themeLabel,
   });
 
   final VoidCallback toggleTheme;
   final bool isDark;
+  final String themeLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class TemplateScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: const Text('Plux template'),
+        title: Text('Plux · $themeLabel'),
         actions: [
           IconButton(
             tooltip: 'Toggle theme',
