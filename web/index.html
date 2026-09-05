@@ -15,22 +15,6 @@
 
   <title>Plux</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <!-- Unregister any service worker previously installed by older bundles.
-       Flutter web ships flutter_service_worker.js by default; it caches
-       index.html and main.dart.js for 1 year, which breaks the
-       ?theme=<name> URL switcher because cached index.html loads the
-       cached bundle regardless of the new URL. We don't need offline
-       for a design-comparison screen. -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(regs) {
-        for (var i = 0; i < regs.length; i++) {
-          regs[i].unregister();
-        }
-      });
-    }
-  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
