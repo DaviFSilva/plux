@@ -180,3 +180,4 @@ The GHA workflow when added will run on PR open + push to main:
 | 2026-09-05 | Added local-dev discipline (docker-compose, .env.example, seed data, fresh-clone checklist) | Production CI/CD alone wasn't enough — daily friction accumulates silently |
 | 2026-09-05 | Wired Railway GitHub integration; prod auto-deploys on push to `main`, dev on `develop` | Removes manual `railway up` step |
 | 2026-09-05 | Discovered solo-project PR limitation: GitHub rejects self-approval on personal repos even with bypass allowance | Working around with a documented workaround (temporary protection disable + direct push for solo-maintenance changes), or accepting trivial test commits |
+| 2026-09-05 | Added GitHub Actions quality gate (`.github/workflows/ci.yml`) | Two jobs: analyze+test (fast), build-release (catches Dockerfile issues). Both branches require both checks on PRs. ~3min total runtime. Verified by deliberately-failing PR that GitHub blocked merge. |
