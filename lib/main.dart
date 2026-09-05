@@ -1,99 +1,48 @@
+// Plux — entry point.
+//
+// For now, this serves the template screen (see docs/template-screen.md)
+// so we can compare design directions side by side. Once a direction is
+// picked, this file becomes the real Plux home screen.
+
 import 'package:flutter/material.dart';
+import 'package:plux/screens/template_screen.dart';
+import 'package:plux/themes/material3.dart';
 
 void main() {
   runApp(const PluxApp());
 }
 
-class PluxApp extends StatelessWidget {
+class PluxApp extends StatefulWidget {
   const PluxApp({super.key});
+
+  @override
+  State<PluxApp> createState() => _PluxAppState();
+}
+
+class _PluxAppState extends State<PluxApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.light
+          ? ThemeMode.dark
+          : ThemeMode.light;
+    });
+  }
+
+  bool get _isDark => _themeMode == ThemeMode.dark;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Plux',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
-      home: const HomeScreen(),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Plux'),
-        backgroundColor: theme.colorScheme.inversePrimary,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.school_outlined,
-                size: 96,
-                color: theme.colorScheme.primary,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Plux',
-                style: theme.textTheme.headlineLarge,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Your personal learning + knowledge platform',
-                style: theme.textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              const _FeatureChip(
-                icon: Icons.style_outlined,
-                label: 'Spaced-repetition flashcards',
-              ),
-              const SizedBox(height: 12),
-              const _FeatureChip(
-                icon: Icons.menu_book_outlined,
-                label: 'Personal knowledge base',
-              ),
-              const SizedBox(height: 12),
-              const _FeatureChip(
-                icon: Icons.auto_stories_outlined,
-                label: 'Life log & journal',
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _FeatureChip extends StatelessWidget {
-  const _FeatureChip({required this.icon, required this.label});
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon),
-            const SizedBox(width: 12),
-            Text(label, style: Theme.of(context).textTheme.bodyLarge),
-          ],
-        ),
+      title: 'Plux template',
+      debugShowCheckedModeBanner: false,
+      themeMode: _themeMode,
+      theme: PluxTheme.light(),
+      darkTheme: PluxTheme.dark(),
+      home: TemplateScreen(
+        toggleTheme: _toggleTheme,
+        isDark: _isDark,
       ),
     );
   }
