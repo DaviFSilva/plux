@@ -16,6 +16,7 @@ class Tokens {
     required this.spacing,
     required this.typeScale,
     this.useMonoFont = false,
+    this.fontFamilyOverride,
   });
 
   final String name;
@@ -25,8 +26,16 @@ class Tokens {
   final ThemeSpacing spacing;
   final TypeScale typeScale;
   final bool useMonoFont;
+  /// If set, uses this font family instead of platform default or
+  /// monospace. Must match the family name registered in web/index.html
+  /// (Google Fonts link) before the Flutter app loads.
+  final String? fontFamilyOverride;
 
-  String? fontFamily() => useMonoFont ? 'monospace' : null;
+  String? fontFamily() {
+    if (fontFamilyOverride != null) return fontFamilyOverride;
+    return useMonoFont ? 'monospace' : null;
+  }
+
   TextTheme textTheme(Brightness brightness) =>
       typeScale.toTextTheme(brightness);
 }

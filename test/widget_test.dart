@@ -33,6 +33,7 @@ void main() {
     await tester.pumpWidget(const PluxApp());
     await tester.pumpAndSettle();
 
+    // Default (material3, light) shows the brightness icon
     expect(find.byIcon(Icons.brightness_6_outlined), findsOneWidget);
 
     final toggle = find.byIcon(Icons.brightness_6_outlined);
@@ -47,6 +48,7 @@ void main() {
       'material3': 'Material 3',
       'premium-minimal': 'Premium minimal',
       'premium_minimal': 'Premium minimal',
+      'plux': 'Plux (committed)',
       'warm-journal': 'Warm journal',
       'brutalist': 'Brutalist',
       'editorial': 'Editorial',

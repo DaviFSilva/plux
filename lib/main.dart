@@ -1,18 +1,21 @@
 // Plux — entry point.
 //
 // For now, this serves the template screen (see docs/template-screen.md)
-// so we can compare design directions side by side. URL query param
-// `?theme=<name>` selects a direction; default is `material3`.
+// or the stress-test screen for the committed Plux direction
+// (see docs/plux-direction.md). URL query param `?theme=<name>`
+// selects a direction; default is `material3`.
 //
 // Available themes: material3, premium-minimal, warm-journal, brutalist,
-// editorial, data-dense, soft-pastel, terminal.
+// editorial, data-dense, soft-pastel, terminal, plux.
 //
-// Once a direction is picked, this file becomes the real Plux home
-// screen and the theme switcher goes away.
+// Once a single direction is committed, this file becomes the real
+// Plux home screen and the theme switcher goes away.
 
 import 'package:flutter/material.dart';
+import 'package:plux/screens/stress_test/stress_test_screen.dart';
 import 'package:plux/screens/template_screen.dart';
 import 'package:plux/themes/material3.dart';
+import 'package:plux/themes/plux.dart';
 import 'package:plux/themes/premium_minimal.dart';
 import 'package:plux/themes/warm_journal.dart';
 import 'package:plux/themes/brutalist.dart';
@@ -34,7 +37,6 @@ class PluxApp extends StatefulWidget {
   /// Resolve the active theme pair from a URL `?theme=<name>` value.
   /// Defaults to material3 when the param is missing or unknown.
   /// Public so tests can exercise the resolver without faking `Uri.base`.
-  @visibleForTesting
   static ({ThemeData light, ThemeData dark, String label}) resolveThemes(
       String? requested) {
     final name = (requested ?? 'material3').toLowerCase();
@@ -46,6 +48,12 @@ class PluxApp extends StatefulWidget {
           light: PremiumMinimalTokens.lightTheme(),
           dark: PremiumMinimalTokens.darkTheme(),
           label: 'Premium minimal',
+        );
+      case 'plux':
+        return (
+          light: PluxTokens.lightTheme(),
+          dark: PluxTokens.darkTheme(),
+          label: 'Plux (committed)',
         );
       case 'warm-journal':
       case 'warm_journal':
@@ -120,11 +128,24 @@ class _PluxAppState extends State<PluxApp> {
       themeMode: _themeMode,
       theme: themes.light,
       darkTheme: themes.dark,
-      home: TemplateScreen(
-        toggleTheme: _toggleTheme,
+      home: _buildHome(themes.label),
+    );
+  }
+
+  /// The Plux direction uses the full stress-test screen so the liquid
+  /// interactions have real components to bend. Other directions keep
+  /// the simpler template screen.
+  Widget _buildHome(String label) {
+    if (label == 'Plux (committed)') {
+      return StressTestScreen(
         isDark: _isDark,
-        themeLabel: themes.label,
-      ),
+        toggleTheme: _toggleTheme,
+      );
+    }
+    return TemplateScreen(
+      toggleTheme: _toggleTheme,
+      isDark: _isDark,
+      themeLabel: label,
     );
   }
 }

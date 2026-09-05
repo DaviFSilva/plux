@@ -35,6 +35,14 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # Charts for the stress-test screen.
+  fl_chart: ^0.69.0
+
+  # Optional Google Fonts loader. The fonts are also loaded via the
+  # <link> tag in web/index.html so this package isn't strictly required
+  # for web; keep it in pubspec for parity with future native targets.
+  google_fonts: ^6.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

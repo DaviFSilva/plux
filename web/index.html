@@ -15,6 +15,58 @@
 
   <title>Plux</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <!-- Preload Ubuntu from Google Fonts so it's ready when Flutter
+       renders. The font-family="Ubuntu" in our Dart theme resolves to
+       these declared faces. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- The Plux metaball filter. Used by the nav indicator and active
+       filter chips to make overlapping shapes merge. The filter
+       elements must stay in the document (not removed), and the
+       threshold (the last value in the colorMatrix) controls how much
+       the shapes need to overlap before they merge. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="plux-goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+        <feColorMatrix
+          in="blur"
+          mode="matrix"
+          values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
+                  0 0 0 18 -8"
+          result="goo"
+        />
+        <feBlend in="SourceGraphic" in2="goo" />
+      </filter>
+    </defs>
+  </svg>
+
+  <style>
+    /* Web fallback for pages before Flutter mounts. The Flutter web
+       app uses Ubuntu via the theme; this just keeps the loading state
+       visually consistent. */
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #FBFAFE;
+      font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1A1525;
+    }
+    @media (prefers-color-scheme: dark) {
+      html, body {
+        background: #13101D;
+        color: #EDE8F7;
+      }
+    }
+  </style>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
