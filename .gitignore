@@ -22,3 +22,6 @@ Thumbs.db
 
 # Misc
 coverage/
+
+# Node (Railway IaC SDK)
+node_modules/
