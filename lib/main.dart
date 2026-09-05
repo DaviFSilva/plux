@@ -97,4 +97,5 @@ class _FeatureChip extends StatelessWidget {
       ),
     );
   }
-}
+}  // deliberate lint failure for CI test
+BAD_SYNTAX_HERE
