@@ -16,15 +16,21 @@
 ## Current pipeline (as of initial deploy)
 
 ```
-local → git push main → Railway GitHub integration
+local → git push develop → Railway GitHub integration (planned)
+                          → Dockerfile build (Railway Metal builder)
+                          → nginx serves build/web/
+                          → plux-dev.up.railway.app (sleeps when idle)
+
+local → git push main → Railway GitHub integration (planned)
                        → Dockerfile build (Railway Metal builder)
                        → nginx serves build/web/
                        → plux-production.up.railway.app
 ```
 
-- Deploys are triggered manually via `railway up` today; GitHub App auto-deploy is the next planned change (see §5).
-- Single environment: `production`. No staging, no PR previews (yet).
-- Single service: `plux` (Flutter web).
+- Two environments: `development` (sleeps) and `production`.
+- Two branches: `develop` (integration) and `main` (production-ready).
+- `main` only changes via PR from `develop`.
+- Manual deploys today (`railway up`); GitHub App auto-deploy is the next planned change.
 
 ---
 
@@ -58,14 +64,18 @@ RUN --mount=type=cache,target=/root/.pub-cache \
 
 ### 3. Branch → environment mapping
 
-**Decision (today)**: `main` → `production`. That's it.
+**Decision (today)**: two branches, two environments.
 
-**Why**: solo project, premature to maintain two deploy targets.
+| Branch | Environment | Auto-deploy | URL |
+|---|---|---|---|
+| `develop` | `development` | yes (when GH App installed) | `plux-dev.up.railway.app` |
+| `main` | `production` | yes (when GH App installed) | `plux-production.up.railway.app` |
 
-**When to add staging**:
-- We have real users, OR
-- We're about to add a destructive feature and want a safe preview, OR
-- Another contributor joins.
+**Flow**: feature work → PR to `develop` → CI green → auto-deploy to dev env → verify → PR `develop` → `main` → CI green → auto-deploy to prod.
+
+**Why two environments**: "does this deploy on Railway?" is a question only Railway can answer. Local `flutter run` doesn't catch Dockerfile issues, env-var drift, or platform-specific bugs. The dev environment is a cheap (sleeps) rehearsal space.
+
+**Why no staging yet**: dev + prod is enough while the project is solo and pre-users. Add staging as a third env when we need a place to validate destructive changes (DB migrations, breaking API changes) before they hit prod.
 
 **When to add PR preview environments**:
 - Multiple contributors, OR
@@ -145,6 +155,9 @@ The GHA workflow when added will run on PR open + push to main:
 - Blue-green or canary releases. Railway's zero-downtime deploys are sufficient at our scale.
 - Security scanning (Trivy, Snyk). Base images are official (`nginx:1.27-alpine`, official Python). Revisit if we add custom base images.
 - Kubernetes. We're on Railway on purpose.
+- Staging environment. Dev + prod is enough while pre-users. Add when destructive changes need a safe landing.
+- Feature branches for everything. Solo + small features = commit to `develop` directly. Add `feature/*` branches when changes take > 1 day or have a reviewer.
+- Auto-promote from `develop` to `main`. Promotion is a deliberate act (PR), not automatic.
 
 ---
 
@@ -162,3 +175,5 @@ The GHA workflow when added will run on PR open + push to main:
 |---|---|---|
 | 2026-09-05 | Initial pipeline: Railway-built Dockerfile + nginx static serving | First deploy validated |
 | 2026-09-05 | Document created | Capture CI/CD decisions before tribal knowledge accumulates |
+| 2026-09-05 | Added two-branch / two-environment model (`develop` → dev env, `main` → prod) | Want a Railway-hosted dev surface for testing; main protected via PR |
+| 2026-09-05 | Added local-dev discipline (docker-compose, .env.example, seed data, fresh-clone checklist) | Production CI/CD alone wasn't enough — daily friction accumulates silently |
