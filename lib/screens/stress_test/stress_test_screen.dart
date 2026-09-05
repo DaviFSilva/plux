@@ -213,6 +213,7 @@ class _StressTestScreenState extends State<StressTestScreen> {
               ],
             ),
           ),
+          _lateralNavDemo(context),
           _section(
             'METABALL NAV (active filter chips)',
             Wrap(
@@ -749,6 +750,101 @@ class _StressTestScreenState extends State<StressTestScreen> {
       ),
     );
   }
+
+  // Edge-rail nav demo, modeled on the reference design.
+  // Shows the EdgeRail component on the left + an ExtendingShadowCard
+  // on the right whose shadow elongates back toward the active label.
+  Widget _lateralNavDemo(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'LATERAL NAV (edge rail + extending shadow)',
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  letterSpacing: 1.4,
+                ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            height: 240,
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(28),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: EdgeRail(
+                    labels: const ['Decks', 'Cards', 'Notes', 'Life', 'Stats'],
+                    activeIndex: _selectedNav,
+                    onChanged: (i) => setState(() => _selectedNav = i),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    child: ExtendingShadowCard(
+                      shadowSide: ShadowSide.left,
+                      onTap: () =>
+                          _showSnackbar('Card pulled out of $_selectedNav'),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _railLabels[_selectedNav],
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(color: scheme.onSurface),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Hover or press this card to see the shadow '
+                            'extend toward the active rail label.',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: scheme.onSurfaceVariant),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              LiquidButton(
+                                label: 'Open',
+                                primary: true,
+                                onPressed: () =>
+                                    _showSnackbar('Opened ${_railLabels[_selectedNav]}'),
+                              ),
+                              const SizedBox(width: 8),
+                              LiquidButton(
+                                label: 'Pin',
+                                onPressed: () =>
+                                    _showSnackbar('Pinned ${_railLabels[_selectedNav]}'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static const _railLabels = ['Decks', 'Cards', 'Notes', 'Life log', 'Stats'];
 
   LineChartData _lineChartData() {
     final scheme = Theme.of(context).colorScheme;
