@@ -166,6 +166,7 @@ The GHA workflow when added will run on PR open + push to main:
 - [ ] When does the FastAPI service deploy relative to the web app? Coordinated releases vs. independent?
 - [ ] Do we need staging before adding the backend, or can backend land on prod with feature flags?
 - [ ] When we add a database (Postgres?), how do we handle migrations in CI/CD?
+- [ ] **Solo-PR limitation**: how do we handle main-branch changes that aren't PR-able (hotfixes, CI/CD config)? Options: (a) accept that the only collaborator is yourself and use `gh api -X DELETE` on branch protection, push, restore protection; (b) install a self-approval GitHub App (e.g., `pull-assistant`); (c) move to GitHub organization. None great — pick when it bites.
 
 ---
 
@@ -177,3 +178,5 @@ The GHA workflow when added will run on PR open + push to main:
 | 2026-09-05 | Document created | Capture CI/CD decisions before tribal knowledge accumulates |
 | 2026-09-05 | Added two-branch / two-environment model (`develop` → dev env, `main` → prod) | Want a Railway-hosted dev surface for testing; main protected via PR |
 | 2026-09-05 | Added local-dev discipline (docker-compose, .env.example, seed data, fresh-clone checklist) | Production CI/CD alone wasn't enough — daily friction accumulates silently |
+| 2026-09-05 | Wired Railway GitHub integration; prod auto-deploys on push to `main`, dev on `develop` | Removes manual `railway up` step |
+| 2026-09-05 | Discovered solo-project PR limitation: GitHub rejects self-approval on personal repos even with bypass allowance | Working around with a documented workaround (temporary protection disable + direct push for solo-maintenance changes), or accepting trivial test commits |
